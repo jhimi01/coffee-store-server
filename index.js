@@ -29,7 +29,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const coffeeCollections = client.db("coffeeDB").collection("coffee");
     const blogsCollections = client.db("coffeeDB").collection("blogs");
@@ -46,6 +46,13 @@ async function run() {
       res.send(result);
     })
 
+    app.get("/blogs/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await blogsCollections.findOne(query);
+      res.send(result);
+    });
+
 
     app.get("/coffee/:id", async (req, res) => {
       const id = req.params.id;
@@ -53,6 +60,8 @@ async function run() {
       const result = await coffeeCollections.findOne(query);
       res.send(result);
     });
+
+  
 
     app.post("/coffee", async (req, res) => {
       const newCoffee = req.body;
